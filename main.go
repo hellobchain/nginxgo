@@ -27,13 +27,10 @@ func main() {
 	utils.HandleSignals(logger)
 	pidStr := strconv.Itoa(os.Getpid())
 	os.WriteFile("nginxgo.pid", []byte(pidStr), 0644)
-	for {
-		select {
-		case <-signalChan:
-			// 收到 SIGHUP 信号，执行重置操作
-			logger.Info("nginxgo: received SIGHUP signal, resetting engine")
-			operateCMD(constant.CMD_RESET, -1)
-		}
+	for range signalChan {
+		// 收到 SIGHUP 信号，执行重置操作
+		logger.Info("nginxgo: received SIGHUP signal, resetting engine")
+		operateCMD(constant.CMD_RESET, -1)
 	}
 }
 

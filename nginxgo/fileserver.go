@@ -9,6 +9,7 @@ import (
 //提供文件服务
 
 func (location *location) getFile(w http.ResponseWriter, r *http.Request, mu *sync.Mutex) {
+	logRequest(r)
 	//询问是否正在热重启。如果是则返回503，服务器维护状态码。
 	isNotReSet := mu.TryLock()
 	if !isNotReSet {
