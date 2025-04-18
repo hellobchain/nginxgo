@@ -1,0 +1,18 @@
+version: "3.3"
+networks:
+  nginxgonetwork:
+services:
+
+  nginxgo:
+    image: nginxgo:v1.0.0
+    container_name: nginxgo
+    volumes:
+      - ../configs:/nginxgo/configs
+      - ../logs:/nginxgo/logs
+    ports:
+      - "80:80"
+    restart: always
+    command: nginxgo.bin 
+    networks:
+      - nginxgonetwork
+
