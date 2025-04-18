@@ -2,3 +2,4 @@
 bin
 logs
 nginxgo.pid
+nginxgo.log
