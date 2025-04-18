@@ -1,4 +1,4 @@
-package nginxgo
+package core
 
 //引擎控制
 

@@ -1,4 +1,4 @@
-package nginxgo
+package core
 
 import (
 	"testing"

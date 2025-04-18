@@ -1,4 +1,4 @@
-package main
+package nginxgo
 
 import (
 	"os"
@@ -9,31 +9,15 @@ import (
 	"syscall"
 
 	"github.com/hellobchain/nginxgo/common/constant"
-	"github.com/hellobchain/nginxgo/nginxgo"
+	"github.com/hellobchain/nginxgo/core"
 	"github.com/hellobchain/nginxgo/pkg/utils"
 	"github.com/hellobchain/wswlog/wlogging"
 	"github.com/spf13/pflag"
 )
 
 var logger = wlogging.MustGetLoggerWithoutName()
-var engine *nginxgo.Engine // 声明一个 Engine 变量
-var mu sync.Mutex          // 互斥锁，用于保护 engine 变量的访问
-func main() {
-	// 监听SIGHUP信号
-	signalChan := make(chan os.Signal, 1)
-	signal.Notify(signalChan, syscall.SIGHUP)
-	command = strings.TrimSpace(command)
-	operateCMD(command, 1)
-	utils.HandleSignals(logger)
-	pidStr := strconv.Itoa(os.Getpid())
-	os.WriteFile("nginxgo.pid", []byte(pidStr), 0644)
-	for range signalChan {
-		// 收到 SIGHUP 信号，执行重置操作
-		logger.Info("nginxgo: received SIGHUP signal, resetting engine")
-		operateCMD(constant.CMD_RESET, -1)
-	}
-}
-
+var engine *core.Engine // 声明一个 Engine 变量
+var mu sync.Mutex       // 互斥锁，用于保护 engine 变量的访问
 var command string
 var flags *pflag.FlagSet
 
@@ -52,7 +36,7 @@ func operateCMD(command string, pid int) {
 	case constant.CMD_START:
 		mu.Lock()
 		if engine == nil {
-			engine = nginxgo.Init()
+			engine = core.Init()
 			go engine.Start()
 		} else {
 			logger.Warn("nginxgo: engine already started")
@@ -105,45 +89,18 @@ func operateCMD(command string, pid int) {
 	}
 }
 
-func sendSignalHup(targetPID int) {
-	// 获取目标进程
-	process, err := os.FindProcess(targetPID)
-	if err != nil {
-		logger.Error("Failed to find process:", err)
-		return
+func StartMain() {
+	// 监听SIGHUP信号
+	signalChan := make(chan os.Signal, 1)
+	signal.Notify(signalChan, syscall.SIGHUP)
+	command = strings.TrimSpace(command)
+	operateCMD(command, 1)
+	utils.HandleSignals(logger)
+	pidStr := strconv.Itoa(os.Getpid())
+	os.WriteFile("nginxgo.pid", []byte(pidStr), 0644)
+	for range signalChan {
+		// 收到 SIGHUP 信号，执行重置操作
+		logger.Info("nginxgo: received SIGHUP signal, resetting engine")
+		operateCMD(constant.CMD_RESET, -1)
 	}
-	// 向目标进程发送 SIGHUP 信号
-	err = process.Signal(syscall.SIGHUP)
-	if err != nil {
-		logger.Error("Failed to send SIGHUP signal:", err)
-		return
-	}
-}
-
-func sendSignalTerm(targetPID int) {
-	// 获取目标进程
-	process, err := os.FindProcess(targetPID)
-	if err != nil {
-		logger.Error("Failed to find process:", err)
-		return
-	}
-	// 向目标进程发送 SIGTERM 信号
-	err = process.Signal(syscall.SIGTERM)
-	if err != nil {
-		logger.Error("Failed to send SIGTERM signal:", err)
-		return
-	}
-}
-
-func readPidFile() (int, error) {
-	data, err := os.ReadFile("nginxgo.pid")
-	if err != nil {
-		return -1, err
-	}
-	pidStr := strings.TrimSpace(string(data))
-	pid, err := strconv.Atoi(pidStr)
-	if err != nil {
-		return -1, err
-	}
-	return pid, nil
 }

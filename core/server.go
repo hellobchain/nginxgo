@@ -1,4 +1,4 @@
-package nginxgo
+package core
 
 // Init 初始化服务，需要提供哈希环上每个真实节点对应的虚拟节点个数
 func Init() *Engine {

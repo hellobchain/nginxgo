@@ -1,4 +1,4 @@
-package nginxgo
+package core
 
 //读取配置文件
 
