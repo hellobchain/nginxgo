@@ -14,6 +14,8 @@ import (
 	"github.com/hellobchain/nginxgo/common/constant"
 )
 
+var NginxConfigFilepath string
+
 // 配置文件结构
 type config struct {
 	Service  []service            `json:"service"`
@@ -185,7 +187,7 @@ func printJsonCfg(cfg config) {
 
 // 读取配置文件
 func readConfig(engine *Engine) {
-	engine.writeEngine(readConfigFromFile("./configs/config.cfg"))
+	engine.writeEngine(readConfigFromFile(NginxConfigFilepath))
 }
 
 // 跳过检测。

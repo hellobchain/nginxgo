@@ -38,7 +38,7 @@ func sendSignalTerm(targetPID int) {
 }
 
 func readPidFile() (int, error) {
-	data, err := os.ReadFile("nginxgo.pid")
+	data, err := os.ReadFile(pidFilePath)
 	if err != nil {
 		return -1, err
 	}

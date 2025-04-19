@@ -5,10 +5,12 @@ go 1.19
 require (
 	github.com/google/uuid v1.6.0
 	github.com/hellobchain/wswlog v0.0.0-20250316041106-9c00e4e92e5b
+	github.com/spf13/cobra v1.1.3
 	github.com/spf13/pflag v1.0.5
 )
 
 require (
+	github.com/inconshreveable/mousetrap v1.0.0 // indirect
 	github.com/lestrrat-go/strftime v1.1.0 // indirect
 	github.com/op/go-logging v0.0.0-20160315200505-970db520ece7 // indirect
 	github.com/pkg/errors v0.9.1 // indirect
