@@ -9,15 +9,15 @@ const (
 
 // location type描述
 const (
-	LOCATION_loadBalancing = 1
-	LOCATION_fileService   = 2
+	LOCATION_LOADBALANCING = 1
+	LOCATION_FILESERVICE   = 2
 )
 
 // 引擎状态描述
 const (
-	ENGINE_start = 1
-	ENGINE_run   = 2
-	ENGINE_reset = 3 //实际有用的好像就这个
+	ENGINE_START = 1
+	ENGINE_RUN   = 2
+	ENGINE_RESET = 3 //实际有用的好像就这个
 )
 
 // block
