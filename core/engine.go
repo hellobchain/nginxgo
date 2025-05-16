@@ -52,14 +52,14 @@ func (engine *Engine) writeEngine(cfg config) {
 			location.hashValue = hash([]byte(strconv.Itoa(location.LocationType) + location.Root + location.FileRoot + location.Upstream))
 			service.hashValue += uint64(location.hashValue)
 		}
-		if engine.state == constant.ENGINE_reset { //reset信息写入reset map
+		if engine.state == constant.ENGINE_RESET { //reset信息写入reset map
 			engine.resetServicesPoll[service.Port] = service
 		}
 	}
 }
 
 func (engine *Engine) resetEngine() {
-	engine.state = constant.ENGINE_reset
+	engine.state = constant.ENGINE_RESET
 	readConfig(engine)
 	for key, value := range engine.resetServicesPoll {
 		//首先确定不存在的，启动服务

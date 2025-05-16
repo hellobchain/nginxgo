@@ -32,11 +32,11 @@ func (service *service) listen(servicesPoll *map[string]*service, upstreamMap *m
 			(*location).Root = "/"
 		}
 		switch (*location).LocationType {
-		case constant.LOCATION_loadBalancing:
+		case constant.LOCATION_LOADBALANCING:
 			mux.HandleFunc((*location).Root, func(writer http.ResponseWriter, request *http.Request) {
 				(*location).forward(writer, request, &service.mu, upstreamMap)
 			})
-		case constant.LOCATION_fileService:
+		case constant.LOCATION_FILESERVICE:
 			mux.HandleFunc((*location).Root, func(writer http.ResponseWriter, request *http.Request) {
 				(*location).getFile(writer, request, &service.mu)
 			})
@@ -103,7 +103,7 @@ func (location *location) forward(w http.ResponseWriter, r *http.Request, mu *sy
 
 	// 创建反向代理。
 	proxy := httputil.NewSingleHostReverseProxy(remote)
-	// 修改响应头，去除X-Forwarded-Host等
+	// 修改响应头
 	proxy.ModifyResponse = func(resp *http.Response) error {
 		for _, header := range upstream.ProxySetHeader {
 			w.Header().Add(header.HeaderName, header.HeaderValue)
